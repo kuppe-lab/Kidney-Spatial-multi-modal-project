@@ -1,5 +1,5 @@
 The Flex-based single cell RNA-seq raw fastq files were processed with the Costalab scrna_seurat_pipeline (https://github.com/CostaLab/scrna_seurat_pipeline.git). We ran the pipeline in a local singularity container. The script and parameters are shown below.  
-```
+```Bash
 #!/bin/bash
 
 ### Job name
