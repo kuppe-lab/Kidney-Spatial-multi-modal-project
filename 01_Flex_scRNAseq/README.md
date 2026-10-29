@@ -30,7 +30,11 @@ date
 ## 50 cores run, future memory
 #mkdir -p ${data_path}/${proj_name}
 #ln -s ${data_path}/conf/config_${proj_name}.R ${data_path}/${proj_name}
-apptainer exec -w --bind /hpcwork/p0020567/data/dbit-seq/scRNA_data:/app /hpcwork/fp015734/Software/packages/scrna_pipeline_docker /usr/bin/Rscript /app/scrna_seurat_pipeline/data_factory.R -n 24 --MaxMemMega=180000 -z "lz4" -c "/app/scrna_seurat_pipeline/conf/config_kidney7.R" -s "${data_path}/${proj_name}/save" -e "${data_path}/${proj_name}/charts" -a seurat_clusters --allinone=TRUE --nFeatureRNAfloor=400 --nCountRNAfloor=500 --nCountRNAceiling=20000 --pct_mitoceiling=10 --pct_riboceiling=100 --countmatrixformat='10X' --dims4Integrate="1:30" --Dims4FindNeighbors="1:50" --harmony_dim="1:50" -r 1.5
+apptainer exec -w --bind /hpcwork/p0020567/data/dbit-seq/scRNA_data:/app \
+/hpcwork/fp015734/Software/packages/scrna_pipeline_docker /usr/bin/Rscript /app/scrna_seurat_pipeline/data_factory.R \
+-n 24 --MaxMemMega=180000 -z "lz4" -c "/app/scrna_seurat_pipeline/conf/config_kidney7.R" -s "${data_path}/${proj_name}/save" \
+-e "${data_path}/${proj_name}/charts" -a seurat_clusters --allinone=TRUE --nFeatureRNAfloor=400 --nCountRNAfloor=500 \
+--nCountRNAceiling=20000 --pct_mitoceiling=10 --pct_riboceiling=100 --countmatrixformat='10X' --dims4Integrate="1:30" --Dims4FindNeighbors="1:50" --harmony_dim="1:50" -r 1.5
 
 date
 
