@@ -1,5 +1,8 @@
 # Kidney-Spatial-multi-modal-project
 
+# -00_envs/
+ Conda environment files
+
 # -01_Flex_scRNAseq/
 10X Flex single-cell RNA-seq processing and annotation
 
@@ -18,8 +21,5 @@
 # -06_spatital_multimodal_analysis/
  Correalation of two modality, ECM score, Niche analysis, GSEA, cell-cell interaction
 
-# -07_envs/
- Conda environment files
-
-# -08_data/
+# -07_data/
 ....
