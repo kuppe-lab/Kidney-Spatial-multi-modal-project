@@ -1,1 +1,1 @@
-
+The Visium HD raw fastq files were processed with Space Ranger. The count metrics were further processed by custom notebooks which were modified from the 10x Visium HD data processing tutorial (https://colab.research.google.com/github/10XGenomics/analysis_guides/blob/main/Visium_HD_multi_sample_comparison_python.ipynb) and integrated with the RAPIDS-singlecell package.
