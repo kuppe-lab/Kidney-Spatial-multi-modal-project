@@ -7,6 +7,25 @@ Created 26.10.2026
 
 We load the data per sample and determine the SVVs.
 
+Execute the script like this:
+python 00200_Loading_Processing.py <interger_index>
+
+The script needs as input:
+- DesignMatrix_VisiumHD.csv
+  - The files indicated in the design matrix are of course also needed.
+- kidney7_marker_peak_integrate_scATAC_res0.9_annoted2_meta.csv
+- kidney7_15mm_with_ref_2_meta_data.csv
+- chrM_refAllele.txt # The mitochondrial reference alleles
+
+Outputs are:
+- variants per coverage plot
+- strand correlation plot
+- variants of interest CSV for further downstream analysis
+- spatially variable variants derived from the VOIs
+- pruned AnnData object
+- pruned AnnData object with clonal information
+- plots of the SVVs in space
+
 """
 
 print("Loading functions.", flush=True)
@@ -77,7 +96,7 @@ genomic_reference_path = "positions/chrM_refAllele.txt"
 design_matrix_path = "DesignMatrix_VisiumHD.csv"
 design_matrix = pd.read_csv(design_matrix_path)
 index_use = int(sys.argv[1])
-# index_use = 7
+# index_use = 8
 meta_data_09_path = "kidney7_marker_peak_integrate_scATAC_res0.9_annoted2_meta.csv"
 meta_data_25_path = "kidney7_integrate_scRNA_res2.5_annotation.csv"
 meta_data_flowgel_path = "kidney7_15mm_with_ref_2_meta_data.csv"
@@ -159,8 +178,8 @@ meta_data["Annotation"] = meta_data["Annotation"].str.replace(r"VSMCs?_Pericytes
 
 
 print("Adding the cell type annotation.", flush=True)
-metadata_spot_ids    = metadata_sample_name + adata.obs_names.str[len(sample_use):]
-annotation_per_spot  = pd.Series(meta_data["Annotation"].reindex(metadata_spot_ids).values, index=adata.obs_names)
+metadata_spot_ids   = metadata_sample_name + adata.obs_names.str[len(sample_use):]
+annotation_per_spot = pd.Series(meta_data["Annotation"].reindex(metadata_spot_ids).values, index=adata.obs_names)
 adata.obs["Annotation"] = annotation_per_spot
 
 
@@ -259,6 +278,24 @@ vois = spatial_sigurd_py.tl.Variant_Selection_VMR(
 print("Saving variants.", flush=True)
 vois.to_csv(f"{output_directory_sample}/VOIs_All.csv")
 # vois = pd.read_csv(f"{output_directory_sample}/VOIs_All.csv", index_col=0)
+
+
+print("We save the matrices as CSVs.", flush = True)
+alts_matrix = adata_pruned.layers["alt_reads"]
+alts_df = pd.DataFrame(alts_matrix.toarray(), index = adata_pruned.obs_names, columns = adata_pruned.var_names)
+alts_df.to_csv(f"{output}{sample_use}/alts_matrix.csv")
+
+refs_matrix = adata_pruned.layers["ref_reads"]
+refs_df = pd.DataFrame(refs_matrix.toarray(), index = adata_pruned.obs_names, columns = adata_pruned.var_names)
+refs_df.to_csv(f"{output}{sample_use}/refs_matrix.csv")
+
+coverage_matrix = adata_pruned.layers["coverage"]
+coverage_df = pd.DataFrame(coverage_matrix.toarray(), index = adata_pruned.obs_names, columns = adata_pruned.var_names)
+coverage_df.to_csv(f"{output}{sample_use}/coverage_matrix.csv")
+
+fraction_matrix = adata_pruned.layers["fraction"]
+fraction_df = pd.DataFrame(fraction_matrix.toarray(), index = adata_pruned.obs_names, columns = adata_pruned.var_names)
+fraction_df.to_csv(f"{output}{sample_use}/fraction_matrix.csv")
 
 
 print("Generating a VOIs scatter plot.", flush=True)
