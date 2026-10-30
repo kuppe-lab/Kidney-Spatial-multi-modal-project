@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 27.10.2026
-
-@author: grasshoff
+@author: Martin Grasshoff
+Environment: spatial_sigurd_py_env
 
 Calculate the Effective Number of Species per cell type and sample to determine the 
 diversity driven by the clones.
@@ -12,8 +11,7 @@ We consider all cell types as cell types of interest.
 For each cell type of interest the differences in ENS between it and the median ENS of
 all other cell types are calculated. This is done per sample, which allows us to do 
 this in paired manner.
-These differences are then compared using a paried Wilcoxon test.
-
+These differences are then compared using the paried Wilcoxon test.
 """
 
 print("Packages.", flush=True)
@@ -23,6 +21,7 @@ import scanpy as sc
 import os
 import matplotlib.pyplot as plt
 from scipy.stats import false_discovery_control, wilcoxon
+import warnings
 
 sc.set_figure_params(dpi_save=300, figsize=[10, 10])
 
@@ -97,83 +96,76 @@ def paired_wilcoxon_safe(deltas):
     
     return (w_effect_size, pvalue, n, float(np.median(deltas_use)))
 
-
 clone_definitions = {
     "57480": {
-        "Clone_01": ["chrM_8614_T>C", "chrM_11435_G>A"],
-        "Clone_02": ["chrM_8440_A>G", "chrM_12776_T>C"],
-        "Clone_03": ["chrM_10640_T>C"],
-        "Clone_04": ["chrM_14438_G>A"],
-        "Clone_05": ["chrM_14123_T>C"],
-        "Clone_06": ["chrM_3315_G>A"],
-        "Clone_07": ["chrM_9100_A>C"],
-        "Clone_08": ["chrM_13928_G>A"],
+        "8614_T_C_11435_G_A": ["chrM_8614_T>C", "chrM_11435_G>A"],
+        "8440_A_G_12776_T_C": ["chrM_8440_A>G", "chrM_12776_T>C"],
+        "10640_T_C": ["chrM_10640_T>C"],
+        "14438_G_A": ["chrM_14438_G>A"],
+        "14123_T_C": ["chrM_14123_T>C"],
+        "3315_G_A": ["chrM_3315_G>A"],
+        "9100_A_C": ["chrM_9100_A>C"],
+        "13928_G_A": ["chrM_13928_G>A"],
+    },
+    "57480_flowgel": {
+        "7869_T_C": ["chrM_7869_T>C"],
+        "13369_T_C_15758_A_G": ["chrM_13369_T>C", "chrM_15758_A>G"],
+    },
+    "58152": {
+        "16266_C_T": ["chrM_16266_C>T"],
+        "13691_A_G": ["chrM_13691_A>G"],
+        "16180_A_G": ["chrM_16180_A>G"],
+    },
+    "61968": {
+        "14180_T_C": ["chrM_14180_T>C"],
+        "15192_T_C": ["chrM_15192_T>C"],
+        "15132_T_C": ["chrM_15132_T>C"],
+        "12084_C_T": ["chrM_12084_C>T"],
     },
     "63055": {
-        "Clone_09": ["chrM_709_G>A", "chrM_16192_C>T", "chrM_16306_C>T"],
-        "Clone_10": ["chrM_51_T>C", "chrM_2395_A>G"],
-        "Clone_11": ["chrM_1051_A>C"],
-        "Clone_12": ["chrM_3715_G>A"],
-        "Clone_13": ["chrM_2118_T>C"],
-        },
-    "58152": {
-        "Clone_14": ["chrM_16266_C>T"],
-        "Clone_15": ["chrM_13691_A>G"],
-        "Clone_16": ["chrM_16180_A>G"],
-        },
-    "61968": {
-        "Clone_17": ["chrM_14180_T>C"],
-        "Clone_18": ["chrM_15192_T>C"],
-        "Clone_19": ["chrM_15132_T>C"],
-        "Clone_20": ["chrM_12084_C>T"],
-        },
+        "709_G_A_16192_C_T_16306_C_T": ["chrM_709_G>A", "chrM_16192_C>T", "chrM_16306_C>T"],
+        "51_T_C_2395_A_G": ["chrM_51_T>C", "chrM_2395_A>G"],
+        "1051_A_C": ["chrM_1051_A>C"],
+        "3715_G_A": ["chrM_3715_G>A"],
+        "2118_T_C": ["chrM_2118_T>C"],
+    },
     "63079": {
-        "Clone_21": ["chrM_556_A>G"],
-        "Clone_22": ["chrM_6505_T>C"],
-        "Clone_23": ["chrM_13552_G>A"],
-        },
+        "556_A_G": ["chrM_556_A>G"],
+        "6505_T_C": ["chrM_6505_T>C"],
+        "13552_G_A": ["chrM_13552_G>A"],
+    },
     "63409": {
-        "Clone_24": ["chrM_556_A>G"],
-        "Clone_25": ["chrM_13198_G>A"],
-        },
+        "556_A_G": ["chrM_556_A>G"],
+        "13198_G_A": ["chrM_13198_G>A"],
+    },
     "63511_reseq": {
-        "Clone_26": ["chrM_16311_T>C"],
-        "Clone_27": ["chrM_10775_G>A"],
-        },
+        "16311_T_C": ["chrM_16311_T>C"],
+        "10775_G_A": ["chrM_10775_G>A"],
+    },
     "71116": {
-        "Clone_28": ["chrM_531_T>C"],
-        "Clone_29": ["chrM_2635_G>C"],
-        },
+        "531_T_C": ["chrM_531_T>C"],
+        "2635_G_C": ["chrM_2635_G>C"],
+    },
     "72351_reseq": {
-        "Clone_30": ["chrM_14470_T>C"],
-        "Clone_31": ["chrM_16007_A>G"],
-        },
+        "14470_T_C": ["chrM_14470_T>C"],
+        "16007_A_G": ["chrM_16007_A>G"],
+    },
     "73266": {
-        "Clone_32": ["chrM_15432_C>T", "chrM_16188_C>T"],
-        "Clone_33": ["chrM_3424_G>A"],
-        "Clone_34": ["chrM_15612_G>A"],
-        },
+        "15612_G_A": ["chrM_15612_G>A"],
+        "3424_G_A": ["chrM_3424_G>A"],
+        "4849_G_A_16188_C_T": ["chrM_4849_G>A", "chrM_16188_C>T"],
+    },
     "76992_2": {
-        "Clone_35": ["chrM_422_T>C", "chrM_16349_A>G"],
-        "Clone_36": ["chrM_15746_A>G"],
-        },
-#     "63212": {
-#         "Clone_39": ["chrM_981_C>T"],
-#         "Clone_40": ["chrM_12902_T>C"],
-#         "Clone_41": ["chrM_15309_T>C"],
-#         "Clone_42": ["chrM_11506_T>C"],
-#         },
-#     "72330_2": {
-#         "Clone_43": ["chrM_3608_G>A"],
-#         "Clone_44": ["chrM_64_C>A"],
-#         },
-    "57480_flowgel": {
-        "Clone_45": ["chrM_2963_A>C"],
-        "Clone_46": ["chrM_7869_T>C"],
+        "3337_G_A": ["chrM_3337_G>A"],
+        "15746_A_G": ["chrM_15746_A>G"],
+    },
+        "78454": {
+        "63_T_G_65_T_G_16362_T_C": ["chrM_63_T>G", "chrM_65_T>G", "chrM_16362_T>C"],
+        "564_G_A": ["chrM_564_G>A"],
     },
     "78454_flowgel": {
-        "Clone_47": ["chrM_13957_G>A"],
-        "Clone_48": ["chrM_15734_G>A"],
+        "15734_G_A": ["chrM_15734_G>A"],
+        "556_A_G": ["chrM_556_A>G"],
     },
 }
 
@@ -186,7 +178,7 @@ min_clonal_spots = 1
 design_matrix_path = "DesignMatrix_VisiumHD.csv"
 design_matrix = pd.read_csv(design_matrix_path, index_col=0)
 order_by_median = True
-samples = ["57480", "58152", "61968", "63055", "63079", "63409", "63511_reseq", "71116", "72351_reseq", "73266", "76992_2", "57480_flowgel", "78454_flowgel"]
+samples = ["57480", "57480_flowgel", "58152", "61968", "63055", "63079", "63409", "63511_reseq", "71116", "72351_reseq", "73266", "76992_2", "78454_flowgel"]
 fig_height = 5
 dpi = 300
 condition_colors = {"Non-Fibrotic": "#1f77b4", "Fibrotic": "#ff7f0e",}
@@ -205,7 +197,7 @@ for sample_use, clones_of_sample in clone_definitions.items():
     seen_svv_sets = {}
     for clone_name, clone_svvs in clones_of_sample.items():
         if clone_name == "WT" or "+" in clone_name:
-            raise ValueError(f"Clone {clone_name!r} in {sample_use!r}: a clone name may not be W' or contain +.")
+            raise ValueError(f"Clone {clone_name!r} in {sample_use!r}: a clone name may not be WT or contain +.")
         
         if len(clone_svvs) == 0:
             raise ValueError(f"Clone {clone_name!r} in {sample_use!r} has no spatially variable variants.")
@@ -236,7 +228,7 @@ for sample_use in samples:
     number_of_annotated_spots = int(adata.obs["Annotation"].notna().sum())
     print(f"Annotated spots: {number_of_annotated_spots} of {adata.n_obs}", flush=True)
     if number_of_annotated_spots == 0:
-        print(f"WARNING: no spot of {sample_use} has an annotation in the AnnData object.", flush=True)
+        warnings.warn(f"No spot of {sample_use} has an annotation in the AnnData object.")
         continue
     
     adata = adata[adata.obs["Annotation"].notna()].copy()
@@ -249,7 +241,7 @@ for sample_use in samples:
         measured_svvs = [svv for svv in clones_of_sample[clone_name] if svv in adata.var_names]
         missing_svvs  = [svv for svv in clones_of_sample[clone_name] if svv not in adata.var_names]
         if missing_svvs:
-            print(f"WARNING: SVVs of {clone_name} missing from {sample_use}: {missing_svvs}", flush=True)
+            warnings.warn(f"SVVs of {clone_name} missing from {sample_use}: {missing_svvs}")
         
         if len(measured_svvs) == 0:
             continue

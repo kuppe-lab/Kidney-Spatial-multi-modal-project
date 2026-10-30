@@ -1,5 +1,9 @@
-# We perform the enrichment of the flow gel sample 57480.
+"""
+@author: Martin Grasshoff
+Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
 
+Performing the enrichment analysis for 57480_flowgel.
+"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
@@ -28,18 +32,18 @@ input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "57480_flowgel"
 input_use <- paste0(input, sample_use, "/")
-output_use <- paste0(output, sample_use, "/Enrichment_Variant/")
-vois <- c("chrM_7869_T_C", "chrM_2963_A_C")
+output_use <- paste0(output, sample_use, "/Enrichment_Variant_PT_Cells_Separate/")
+vois <- read.csv(paste0(input_use, "SpatiallyVariableVariants.csv"))[,1]
+vois <- gsub(">", "_", vois)
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 
 print("We load the meta data.")
-meta_data <- read.table("kidney7_15mm_with_ref_2/meta_data.csv", sep = ",", header = TRUE, row.names = 1)
+meta_data <- read.table("kidney7_15mm_with_ref_2_meta_data.csv", sep = ",", header = TRUE, row.names = 1)
 meta_data[["Sample"]] <- gsub("Diseased_|Healthy_", "", meta_data[["Sample"]])
 rownames(meta_data) <- gsub("Diseased_|Healthy_", "", rownames(meta_data))
 meta_data[["annotation"]] <- gsub("-|/| ", "_", meta_data[["annotation"]])
 meta_data[["CellType"]] <- meta_data[["annotation"]]
-meta_data[["CellType"]][meta_data[["CellType"]] %in% c("PT_S1", "PT_S1_S2", "PT_S2_S3")] <- "PT_Cells"
 
 
 print("We load the fraction.")
@@ -54,7 +58,6 @@ for(i in seq_along(vois)){
   voi_use <- vois[i]
   meta_data[, voi_use] <- ifelse(meta_data[, voi_use] == 1, "Alt", "Ref")
 }
-
 
 print("We perform the enrichment test.")
 celltypes <- sort(unique(meta_data[["CellType"]]))

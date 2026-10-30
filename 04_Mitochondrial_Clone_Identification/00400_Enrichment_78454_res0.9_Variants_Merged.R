@@ -1,10 +1,15 @@
-# We merge some variants for the enrichment, since they largely overlap.
+"""
+@author: Martin Grasshoff
+Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
 
+Performing the enrichment analysis for 78454
+"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
   library(dplyr)
   library(tibble)
+  library(grid)
   library(ComplexHeatmap)
 })
 
@@ -150,8 +155,8 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p[i,j])){
       txt <- ""
@@ -168,10 +173,10 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.pdf"), width = 10, height = 10)
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 
 
@@ -193,8 +198,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p_subset[i,j])){
       txt <- ""
@@ -211,10 +216,10 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9_Merged.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9_Merged.pdf"), width = 4, height = 3)
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
 
 # With legend.
@@ -234,8 +239,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p_subset[i,j])){
       txt <- ""
@@ -252,8 +257,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9_Merged.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9_Merged.pdf"), width = 4, height = 3)
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()

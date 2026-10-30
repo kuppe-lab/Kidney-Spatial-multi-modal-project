@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 28.10.2026
-
-@author: grasshoff
+@author: Martin Grasshoff
+Environment: spatial_sigurd_py_env
 
 We get the variant burden per spot. We also use the mtDNA locus
 constraint (MLC) score sum (MSS).
 
-Then we plot the value per spot on the spatial plot.
+Then, we plot the value per spot on the spatial plot.
 
 """
 

@@ -1,12 +1,15 @@
-# We merge some variants for the enrichment, since they largely overlap.
-# We merge the variants 51T>C    and 2395A>G since 2395A>G completely overlaps.
-# We merge the variants 16192C>T and 16306C>T since they partially overlap.
+"""
+@author: Martin Grasshoff
+Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
 
+Performing the enrichment analysis for 53055
+"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
   library(dplyr)
   library(tibble)
+  library(grid)
   library(ComplexHeatmap)
 })
 
@@ -29,9 +32,13 @@ print("Variables.")
 sample_use <- "63055"
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
+vois <- c("chrM_709_G_A", "chrM_16192_C_T", "chrM_16306_C_T", "chrM_1051_A_C", "chrM_51_T_C", "chrM_2395_A_G", "chrM_3715_G_A", "chrM_2118_T_C")
+
+
+print("We get the used sample.")
+print(sample_use)
 input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
-vois <- c("chrM_709_G_A", "chrM_16192_C_T", "chrM_16306_C_T", "chrM_1051_A_C", "chrM_51_T_C", "chrM_2395_A_G", "chrM_3715_G_A", "chrM_2118_T_C"))
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 

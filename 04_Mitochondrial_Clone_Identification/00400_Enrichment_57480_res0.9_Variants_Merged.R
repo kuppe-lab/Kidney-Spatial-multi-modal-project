@@ -1,7 +1,9 @@
-# We merge some variants for the enrichment, since they largely overlap.
-# We merge the variants 8440A>G and 12776T>C since they completely overlap.
-# We merge the variants 8614T>C and 11435G>A since they partially overlap.
+"""
+@author: Martin Grasshoff
+Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
 
+Performing the enrichment analysis for 57480
+"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
@@ -31,7 +33,7 @@ output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "57480"
 input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
-vois <- c("chrM_10640_T_C", "chrM_14438_G_A", "chrM_3315_G_A", "chrM_14123_T_C", "chrM_9100_A_C", "chrM_13928_G_A", "Merged1", "Merged2")
+vois <- c("chrM_10640_T_C", "chrM_14438_G_A", "chrM_3315_G_A", "chrM_14123_T_C", "chrM_9100_A_C", "chrM_13928_G_A", "chrM_8440_A_G", "chrM_12776_T_C", "chrM_8614_T_C", "chrM_11435_G_A")
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 
@@ -68,6 +70,7 @@ meta_data[, c("chrM_8440_A_G", "chrM_12776_T_C", "chrM_8614_T_C", "chrM_11435_G_
 
 
 print("We perform the enrichment test.")
+vois <- c("chrM_10640_T_C", "chrM_14438_G_A", "chrM_3315_G_A", "chrM_14123_T_C", "chrM_9100_A_C", "chrM_13928_G_A", "Merged1", "Merged2")
 celltypes <- sort(unique(meta_data[["CellType"]]))
 results <- c()
 cells_per_variant_and_celltype <- matrix(NA, nrow = length(vois), ncol = length(celltypes), dimnames = list(vois, celltypes))

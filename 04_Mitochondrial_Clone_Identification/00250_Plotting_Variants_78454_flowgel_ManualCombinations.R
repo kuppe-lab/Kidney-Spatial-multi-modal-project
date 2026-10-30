@@ -1,6 +1,8 @@
 """
-Plotting the clonal definitions for 78454_flowgel
+@author: Martin Grasshoff
 Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+
+Plotting the clonal definitions for 78454_flowgel
 """
 print("Libraries.")
 suppressPackageStartupMessages({

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+@author: Martin Grasshoff
+Environment: spatial_sigurd_py_env
+
 Comparison of the mitochondrial local constraint (MLC) score sum (MSS) between
 cell types, corrected for mitochondrial sequencing depth.
 
@@ -27,10 +30,9 @@ from statsmodels.stats.multitest import multipletests
 print("Settings for the cell type comparison.", flush=True)
 vaf_use = 0.10
 alts_threshold = 2
-input_directory = f"/beegfs/data/CostaLab/Spatial_ATAC_Analysis_KuppeLab/results/SpatialClones/MinVAF_{vaf_use:.2f}_MinAltReads_{alts_threshold}_Pruning/"
+input_directory = f"MinVAF_{vaf_use:.2f}_MinAltReads_{alts_threshold}_Pruning/"
 
-# Samples included in this analysis.
-samples_to_analyse = ["57480", "58152", "61968", "63055", "63079", "63409", "63511_reseq", "71116", "72351_reseq", "73266", "76992_2", "57480_flowgel", "78454_flowgel"]
+samples_to_analyse = ["57480", "57480_flowgel", "58152", "61968", "63055", "63079", "63409", "63511_reseq", "71116", "72351_reseq", "73266", "76992_2", "78454_flowgel"]
 design_matrix_path = "DesignMatrix_VisiumHD.csv"
 design_matrix = pd.read_csv(design_matrix_path, index_col=0)
 sample_to_condition = design_matrix["condition"].to_dict()

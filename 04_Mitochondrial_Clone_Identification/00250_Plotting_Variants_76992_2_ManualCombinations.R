@@ -1,6 +1,8 @@
 """
-Plotting the clonal definitions for 76992_2
+@author: Martin Grasshoff
 Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+
+Plotting the clonal definitions for 76992_2
 """
 print("Libraries.")
 suppressPackageStartupMessages({

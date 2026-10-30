@@ -1,10 +1,15 @@
-# We perform the enrichment of the flow gel sample 78454.
+"""
+@author: Martin Grasshoff
+Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
 
+Performing the enrichment analysis for 78454_flowgel
+"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
   library(dplyr)
   library(tibble)
+  library(grid)
   library(ComplexHeatmap)
 })
 
@@ -28,18 +33,17 @@ input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "78454_flowgel"
 input_use <- paste0(input, sample_use, "/")
-output_use <- paste0(output, sample_use, "/Enrichment_Variant/")
-vois <- c("chrM_13957_G_A", "chrM_15734_G_A")
+output_use <- paste0(output, sample_use, "/Enrichment_Variant_PT_Cells_Separate/")
+vois <- c("chrM_556_A_G", "chrM_15734_G_A")
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 
 print("We load the meta data.")
-meta_data <- read.table("kidney7_15mm_with_ref_2/meta_data.csv", sep = ",", header = TRUE, row.names = 1)
+meta_data <- read.table("kidney7_15mm_with_ref_2_meta_data.csv", sep = ",", header = TRUE, row.names = 1)
 meta_data[["Sample"]] <- gsub("Diseased_|Healthy_", "", meta_data[["Sample"]])
 rownames(meta_data) <- gsub("Diseased_|Healthy_", "", rownames(meta_data))
 meta_data[["annotation"]] <- gsub("-|/| ", "_", meta_data[["annotation"]])
 meta_data[["CellType"]] <- meta_data[["annotation"]]
-meta_data[["CellType"]][meta_data[["CellType"]] %in% c("PT_S1", "PT_S1_S2", "PT_S2_S3")] <- "PT_Cells"
 
 
 print("We load the fraction.")
@@ -140,8 +144,8 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p[i,j])){
       txt <- ""
@@ -158,10 +162,10 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation.pdf"), width = 10, height = 10)
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 
 
@@ -183,8 +187,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p_subset[i,j])){
       txt <- ""
@@ -201,10 +205,10 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.pdf"), width = 4, height = 5)
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
 
 # With legend.
@@ -224,8 +228,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
   bottom_annotation = NULL,
-  heatmap_legend_param = list(legend_height = unit(4, "cm")),
-  row_names_max_width = unit(12, "cm"),
+  heatmap_legend_param = list(legend_height = grid::unit(4, "cm")),
+  row_names_max_width = grid::unit(12, "cm"),
   cell_fun = function(j, i, x, y, w, h, fill){
     if(is.na(p_subset[i,j])){
       txt <- ""
@@ -242,8 +246,8 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Smaller.pdf"), width = 4, height = 5)
-ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()

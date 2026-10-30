@@ -1,6 +1,9 @@
 """
-Plotting the clonal definitions for 71116
+@author: Martin Grasshoff
 Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+
+
+Plotting the clonal definitions for 71116
 """
 print("Libraries.")
 suppressPackageStartupMessages({
