@@ -4,6 +4,7 @@
 Created 26.10.2026
 
 @author: Martin Grasshoff
+Environment: spatial_sigurd_py_env
 
 We load the data per sample and determine the SVVs.
 
