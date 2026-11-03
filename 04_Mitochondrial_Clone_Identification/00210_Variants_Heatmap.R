@@ -1,20 +1,11 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
-
-We plot the mtVars as a heatmap.
-
-Execute the script like this:
-python 00200_Loading_Processing.py <interger_index>
-
-The script needs as input:
-- the SVVs from 00200
-- the fraction matrix
-- positions
-
-Outputs is a heatmap of the SVVs.
-
-"""
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# We plot the mtVars as a heatmap.
+# The script needs as input:
+# - the SVVs from 00200
+# - the fraction matrix
+# - positions
+# Output is a heatmap of the SVVs.
 
 print("Libraries.")
 suppressPackageStartupMessages({

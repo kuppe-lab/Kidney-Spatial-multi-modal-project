@@ -1,10 +1,7 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Plotting the clonal definitions for 71116
 
-
-Plotting the clonal definitions for 71116
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(ggplot2)

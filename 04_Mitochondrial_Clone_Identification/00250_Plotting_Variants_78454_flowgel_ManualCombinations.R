@@ -1,9 +1,7 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Plotting the clonal definitions for 78454_flowgel
 
-Plotting the clonal definitions for 78454_flowgel
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(ggplot2)

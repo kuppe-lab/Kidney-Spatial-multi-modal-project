@@ -1,10 +1,7 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Plotting the clonal definitions for 72351_reseq
 
-
-Plotting the clonal definitions for 72351_reseq
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(ggplot2)

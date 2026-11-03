@@ -1,14 +1,13 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 61968, 63079, 63409
 
-Performing the enrichment analysis for 61968, 63079, 63409
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
   library(dplyr)
   library(tibble)
+  library(ComplexHeatmap)
 })
 
 
@@ -147,7 +146,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -166,7 +165,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
@@ -190,7 +189,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -209,7 +208,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
@@ -231,7 +230,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -250,7 +249,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")

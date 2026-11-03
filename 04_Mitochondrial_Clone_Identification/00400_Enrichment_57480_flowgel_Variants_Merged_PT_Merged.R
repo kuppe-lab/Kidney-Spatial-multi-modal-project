@@ -1,10 +1,8 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 57480_flowgel.
+# We combine the different PT cell types.
 
-Performing the enrichment analysis for 57480_flowgel.
-We combine the different PT cell types.
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
@@ -40,7 +38,8 @@ dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 
 print("We load the meta data.")
-meta_data <- read.table("kidney7_15mm_with_ref_2_meta_data.csv", sep = ",", header = TRUE, row.names = 1)
+meta_data <- read.csv("kidney7_15mm_metadata.csv", row.names = 1)
+rownames(meta_data) <- gsub("#", "_", rownames(meta_data))
 meta_data[["Sample"]] <- gsub("Diseased_|Healthy_", "", meta_data[["Sample"]])
 rownames(meta_data) <- gsub("Diseased_|Healthy_", "", rownames(meta_data))
 meta_data[["annotation"]] <- gsub("-|/| ", "_", meta_data[["annotation"]])
@@ -62,7 +61,16 @@ for(i in seq_along(vois)){
 }
 
 
+print("Merging the variants.")
+meta_data[["Merged1"]] <- paste0(meta_data[, "chrM_13369_T_C"], "_", meta_data[, "chrM_15758_A_G"])
+meta_data[["Merged1"]] <- ifelse(meta_data[["Merged1"]] %in% c("Alt_Alt", "Alt_Ref", "Ref_Alt"), "Alt", meta_data[["Merged1"]])
+meta_data[["Merged1"]] <- ifelse(meta_data[["Merged1"]] == "Ref_Ref", "Ref", meta_data[["Merged1"]])
+
+meta_data[, c("chrM_13369_T_C", "chrM_15758_A_G")] <- NULL
+
+
 print("We perform the enrichment test.")
+vois <- c("chrM_7869_T_C", "Merged1")
 celltypes <- sort(unique(meta_data[["CellType"]]))
 results <- c()
 cells_per_variant_and_celltype <- matrix(NA, nrow = length(vois), ncol = length(celltypes), dimnames = list(vois, celltypes))
@@ -130,6 +138,7 @@ legend_P <- ComplexHeatmap::Legend(
   background = "transparent",
 )
 
+rownames(p)[2] <- c("13369T>C+\n15758A>G")
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
@@ -141,7 +150,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -160,7 +169,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
@@ -184,7 +193,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -203,7 +212,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
@@ -225,7 +234,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -244,7 +253,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")

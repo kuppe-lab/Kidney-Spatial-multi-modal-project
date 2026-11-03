@@ -1,9 +1,7 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 58152
 
-Performing the enrichment analysis for 58152
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
@@ -32,7 +30,7 @@ sample_use <- "58152"
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 input_use <- paste0(input, sample_use, "/")
-output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
+output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant_PT_Cells_Separate/")
 vois <- read.csv(paste0(input_use, "SpatiallyVariableVariants.csv"))[,1]
 vois <- gsub(">", "_", vois)
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
@@ -82,3 +80,169 @@ results[["P_adj"]] <- p.adjust(results[["P"]], method = "fdr")
 results[["P_adj_log10"]] <- -log10(results[["P_adj"]])
 write.table(results, paste0(output_use, "/Enrichment_Variant_CellType_Enhanced_kidney7_res0.9_Merged.csv"), sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
 write.table(cells_per_variant_and_celltype, paste0(output_use, "/cells_per_variant_and_celltype_enhanced_kidney7_res0.9_Merged.csv"), sep = ",", col.names = TRUE, row.names = TRUE, quote = FALSE)
+
+
+print("We generate a heatmap for the new annotation.")
+# We set the P value to 0 and the log10 value to 1, if the OddsRatio is smaller than 1.
+results[["P"]] <- ifelse(results[["OddsRatio"]] < 1, 0, results[["P"]])
+results[["P_adj"]] <- ifelse(results[["OddsRatio"]] < 1, 0, results[["P_adj"]])
+results[["P_adj_log10"]] <- ifelse(results[["OddsRatio"]] < 1, 0, results[["P_adj_log10"]])
+
+p <- results
+rownames(p) <- NULL
+p <- p |>
+  dplyr::select(VOI, CellType, P_adj_log10) |>
+  tidyr::pivot_wider(names_from = CellType, values_from = P_adj_log10) |>
+  tibble::column_to_rownames("VOI") |>
+  as.matrix()
+scores <- results
+rownames(scores) <- NULL
+scores <- scores |>
+  dplyr::select(VOI, CellType, OddsRatio) |>
+  tidyr::pivot_wider(names_from = CellType, values_from = OddsRatio) |>
+  tibble::column_to_rownames("VOI") |>
+  as.matrix()
+
+score_max <- ceiling(max(p, na.rm = TRUE))
+if(score_max <= 0) score_max <- 1
+col_fun <- circlize::colorRamp2(c(0, score_max), c("white", "red"))
+p[p < -log10(0.05)] <- NA
+rownames(p) <- gsub("chrM_", "", rownames(p))
+rownames(p) <- sub("_(?=.$)", ">", rownames(p), perl = TRUE)
+rownames(p) <- gsub("_", "", rownames(p))
+
+
+legend_P <- ComplexHeatmap::Legend(
+  title     = "-log10(P)",
+  col_fun   = circlize::colorRamp2(c(0, ceiling(max(p, na.rm = TRUE))), c("white", "red")),
+  at        = pretty(c(0, ceiling(max(p, na.rm = TRUE)))),
+  labels    = pretty(c(0, ceiling(max(p, na.rm = TRUE)))),
+  title_gp  = grid::gpar(fontsize = 12, fontface = "plain"),
+  labels_gp = grid::gpar(fontsize = 12),
+  border    = FALSE,
+  background = "transparent",
+)
+
+p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
+  column_title = sample_use,
+  rect_gp = grid::gpar(col = "black", lwd = 1),
+  row_title = "",
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_side = "left",
+  col = col_fun,
+  row_names_gp = grid::gpar(fontsize = 15),
+  column_names_gp = grid::gpar(fontsize = 15),
+  column_names_rot = 45,
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  show_heatmap_legend = FALSE,
+  bottom_annotation = NULL,
+  heatmap_legend_param = list(legend_height = unit(4, "cm")),
+  row_names_max_width = unit(12, "cm"),
+  cell_fun = function(j, i, x, y, w, h, fill){
+    if(is.na(p[i,j])){
+      txt <- ""
+    } else if(p[i,j] > -log10(0.001)){
+      txt <- "***"
+    } else if(p[i,j] > -log10(0.01)){
+      txt <- "**"
+    } else if(p[i,j] > -log10(0.05)){
+      txt <- "*"
+    } else{
+      txt <- ""
+    }
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
+  }
+)
+png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
+ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+dev.off()
+pdf(paste0(output_use, "/Heatmap_Annotation.pdf"), width = 10, height = 10)
+ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+dev.off()
+
+
+na_check <- colSums(!is.na(p)) > 0
+p_subset <- p[, na_check, drop = FALSE]
+p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
+  column_title = sample_use,
+  rect_gp = grid::gpar(col = "black", lwd = 1),
+  row_title = "",
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_side = "left",
+  col = col_fun,
+  row_names_gp = grid::gpar(fontsize = 15),
+  column_names_gp = grid::gpar(fontsize = 15),
+  column_names_rot = 45,
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  show_heatmap_legend = FALSE,
+  bottom_annotation = NULL,
+  heatmap_legend_param = list(legend_height = unit(4, "cm")),
+  row_names_max_width = unit(12, "cm"),
+  cell_fun = function(j, i, x, y, w, h, fill){
+    if(is.na(p_subset[i,j])){
+      txt <- ""
+    } else if(p_subset[i,j] > -log10(0.001)){
+      txt <- "***"
+    } else if(p_subset[i,j] > -log10(0.01)){
+      txt <- "**"
+    } else if(p_subset[i,j] > -log10(0.05)){
+      txt <- "*"
+    } else{
+      txt <- ""
+    }
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
+  }
+)
+png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
+ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+dev.off()
+pdf(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.pdf"), width = 4, height = 5)
+ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
+dev.off()
+
+# With legend.
+p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
+  column_title = sample_use,
+  rect_gp = grid::gpar(col = "black", lwd = 1),
+  row_title = "",
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_side = "left",
+  col = col_fun,
+  row_names_gp = grid::gpar(fontsize = 15),
+  column_names_gp = grid::gpar(fontsize = 15),
+  column_names_rot = 45,
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  show_heatmap_legend = FALSE,
+  bottom_annotation = NULL,
+  heatmap_legend_param = list(legend_height = unit(4, "cm")),
+  row_names_max_width = unit(12, "cm"),
+  cell_fun = function(j, i, x, y, w, h, fill){
+    if(is.na(p_subset[i,j])){
+      txt <- ""
+    } else if(p_subset[i,j] > -log10(0.001)){
+      txt <- "***"
+    } else if(p_subset[i,j] > -log10(0.01)){
+      txt <- "**"
+    } else if(p_subset[i,j] > -log10(0.05)){
+      txt <- "*"
+    } else{
+      txt <- ""
+    }
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
+  }
+)
+png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
+ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+dev.off()
+pdf(paste0(output_use, "/Heatmap_Annotation_Smaller.pdf"), width = 4, height = 5)
+ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+dev.off()
