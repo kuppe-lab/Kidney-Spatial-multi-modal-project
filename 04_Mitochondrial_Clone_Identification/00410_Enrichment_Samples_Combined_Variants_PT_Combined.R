@@ -103,6 +103,10 @@ meta_data$Clonal <- ifelse(meta_data$Clonal, "Clonal", "WT")
 rm(fraction)
 
 
+print("We remove the Unannotated spots.")
+meta_data <- subset(meta_data, CellType != "Unannotated")
+
+
 print("We save the clonal information.")
 write.table(meta_data, paste0(output_use, "Clonal_Information.csv"), row.names = TRUE, col.names = TRUE, sep = ",", quote = FALSE)
 
@@ -204,11 +208,11 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
-png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 2.5, units = "in", res = 600, type = "cairo")
+ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
-pdf(paste0(output_use, "/Heatmap_Annotation.pdf"), width = 10, height = 10)
-ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+pdf(paste0(output_use, "/Heatmap_Annotation.pdf"), width = 10, height = 2.5)
+ComplexHeatmap::draw(p1, padding = unit(c(2,3,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 
 
@@ -247,10 +251,10 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
-png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 3.5, units = "in", res = 600, type = "cairo")
+png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
 ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
-pdf(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.pdf"), width = 4, height = 3.5)
+pdf(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.pdf"), width = 4, height = 3)
 ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,2), "mm"), heatmap_legend_side = "right")
 dev.off()
 
@@ -288,9 +292,9 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
-png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 3.5, units = "in", res = 600, type = "cairo")
+png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
 ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
-pdf(paste0(output_use, "/Heatmap_Annotation_Smaller.pdf"), width = 4, height = 3.5)
+pdf(paste0(output_use, "/Heatmap_Annotation_Smaller.pdf"), width = 4, height = 3)
 ComplexHeatmap::draw(p1, padding = unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()

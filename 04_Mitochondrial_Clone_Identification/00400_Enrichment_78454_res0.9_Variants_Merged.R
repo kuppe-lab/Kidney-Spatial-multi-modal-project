@@ -64,6 +64,10 @@ meta_data[["Merged1"]] <- ifelse(grepl("Ref", meta_data[["Merged1"]]), "Ref", me
 meta_data[, c("chrM_63_T_G", "chrM_65_T_G", "chrM_16362_T_C")] <- NULL
 
 
+print("We remove the Unannotated spots.")
+meta_data <- subset(meta_data, CellType != "Unannotated")
+
+
 print("We perform the enrichment test.")
 vois <- c("chrM_564_G_A", "Merged1")
 celltypes <- sort(unique(meta_data[["CellType"]]))

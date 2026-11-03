@@ -74,6 +74,10 @@ meta_data[["Merged2"]] <- ifelse(meta_data[["Merged2"]] > 0, "Alt", "Ref")
 meta_data[, c("chrM_709_G_A", "chrM_51_T_C", "chrM_2395_A_G", "chrM_16192_C_T", "chrM_16306_C_T")] <- NULL
 
 
+print("We remove the Unannotated spots.")
+meta_data <- subset(meta_data, CellType != "Unannotated")
+
+
 print("We perform the enrichment test.")
 vois <- c("chrM_1051_A_C", "chrM_3715_G_A", "chrM_2118_T_C", "Merged1", "Merged2")
 celltypes <- sort(unique(meta_data[["CellType"]]))

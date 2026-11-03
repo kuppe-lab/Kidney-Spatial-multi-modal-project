@@ -44,6 +44,10 @@ meta_data[["CellType"]] <- meta_data[["Clusters2"]]
 meta_data[["CellType"]][meta_data[["CellType"]] %in% c("PT_S1", "PT_S2", "PT_S3")] <- "PT_Cells"
 
 
+print("We remove the Unannotated spots.")
+meta_data <- subset(meta_data, CellType != "Unannotated")
+
+
 print("We load the fraction.")
 fraction <- read.table(paste0(input, sample_use, "/fraction_matrix.csv"), sep = ",", row.names = 1, header = TRUE)
 colnames(fraction) <- gsub("\\.", "_", colnames(fraction))

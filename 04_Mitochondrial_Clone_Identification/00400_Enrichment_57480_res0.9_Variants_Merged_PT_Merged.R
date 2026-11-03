@@ -68,6 +68,10 @@ meta_data[["Merged2"]] <- ifelse(meta_data[["Merged2"]] == "Ref_Ref", "Ref", met
 meta_data[, c("chrM_8440_A_G", "chrM_12776_T_C", "chrM_8614_T_C", "chrM_11435_G_A")] <- NULL
 
 
+print("We remove the Unannotated spots.")
+meta_data <- subset(meta_data, CellType != "Unannotated")
+
+
 print("We perform the enrichment test.")
 vois <- c("chrM_10640_T_C", "chrM_14438_G_A", "chrM_3315_G_A", "chrM_14123_T_C", "chrM_9100_A_C", "chrM_13928_G_A", "Merged1", "Merged2")
 celltypes <- sort(unique(meta_data[["CellType"]]))
@@ -152,7 +156,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -171,7 +175,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
@@ -195,7 +199,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -214,7 +218,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9_Merged.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
@@ -236,7 +240,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -255,7 +259,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9_Merged.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")

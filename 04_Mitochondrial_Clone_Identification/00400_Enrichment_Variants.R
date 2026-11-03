@@ -37,6 +37,10 @@ rownames(meta_data_total) <- gsub("^P", "", rownames(meta_data_total))
 meta_data_total[["CellType"]] <- meta_data_total[["Clusters2"]]
 
 
+print("We remove the Unannotated spots.")
+meta_data_total <- subset(meta_data_total, CellType != "Unannotated")
+
+
 print("We get the used sample.")
 samples <- c("61968", "63079", "63409")
 new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "Endo", FIB = "FIB", "Immune cells" = "Immune Cells", "Injured PTs" = "Injured PTs", POD = "POD", PT_S1 = "PT S1", PT_S2 = "PT S2",
@@ -46,7 +50,7 @@ for(i in seq_along(samples)){
   sample_use <- samples[i]
   print(sample_use)
   input_use <- paste0(input, sample_use, "/")
-  output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
+  output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant_Variant_PT_Cells_Separate/")
   dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
   vois <- read.table(paste0(input_use, "SpatiallyVariableVariants.csv"), header = TRUE, sep = ",")
   vois <- gsub(">", "_", vois[, 1])
