@@ -44,9 +44,14 @@ for(i in 1:nrow(samples)){
   vois_use <- gsub(">", "_", vois_use)
   vois_list[[name_metadata_use]] <- vois_use
 }
-input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, "Enrichment_Variant_Merged_Samples/")
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
+
+
+print("Saving the variants as a combined data frame.")
+vois_df <- stack(vois_list)[, 2:1]
+colnames(vois_df) <- c("Sample", "Variants")
+write.table(vois_df, paste0(output_use, "Variants_DataFrame.csv"), col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
 
 
 print("We load the meta data.")
