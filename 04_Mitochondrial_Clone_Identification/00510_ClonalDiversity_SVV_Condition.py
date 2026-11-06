@@ -184,6 +184,7 @@ for sample_use in samples:
         continue
     
     adata = sc.read_h5ad(f"{input}{sample_use}/adata_pruned.h5ad")
+    adata = adata[~(adata.obs.Annotation == "Unannotated"), :]
     group_of_sample = design_matrix.loc[sample_use, "condition"]
     
     # A spot carries a clone if at least one of the clone's SVVs is detected.

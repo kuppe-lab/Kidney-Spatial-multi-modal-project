@@ -223,6 +223,7 @@ for sample_use in samples:
         continue
     
     adata = sc.read_h5ad(f"{input}{sample_use}/adata_pruned.h5ad")
+    adata = adata[~(adata.obs.Annotation == "Unannotated"), :]
     
     # The spot annotation was added in 00200.
     number_of_annotated_spots = int(adata.obs["Annotation"].notna().sum())

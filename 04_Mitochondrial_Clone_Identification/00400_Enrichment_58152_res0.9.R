@@ -43,8 +43,8 @@ rownames(meta_data) <- gsub("^P", "", rownames(meta_data))
 meta_data[["CellType"]] <- meta_data[["Clusters2"]]
 
 
-print("We remove the Unannotated spots.")
-meta_data <- subset(meta_data, CellType != "Unannotated")
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We load the fraction.")

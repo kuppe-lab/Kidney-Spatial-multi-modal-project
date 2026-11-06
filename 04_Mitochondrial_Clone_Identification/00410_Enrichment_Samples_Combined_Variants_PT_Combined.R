@@ -76,10 +76,11 @@ meta_data$CellType <- gsub("ATL_DTL", "ATL", meta_data$CellType)
 meta_data$CellType <- gsub("PC_Endothelial|AVR_Endothelial|Endothelial", "Endo", meta_data$CellType)
 meta_data$CellType <- gsub("Fibroblast", "FIB", meta_data$CellType)
 meta_data$CellType <- gsub("Immune cells", "Immune", meta_data$CellType)
-meta_data$CellType <- gsub("Injured PTs", "Injured_PTs", meta_data$CellType)
+meta_data$CellType <- gsub("Injured_PTs", "Injured PTs", meta_data$CellType)
 meta_data$CellType <- gsub("Pod", "POD", meta_data$CellType)
 meta_data$CellType <- gsub("PT_S1|PT_S1_S2|PT_S2|PT_S2_S3|PT_S3", "PT Cells", meta_data$CellType)
-meta_data$CellType <- gsub("VSMC_Pericytes", "VSMC_Pericyte", meta_data$CellType)
+meta_data$CellType <- gsub("VSMC_Pericyte|VSMC_Pericytes", "VSMC Pericytes", meta_data$CellType)
+meta_data$CellType <- gsub("PV_Cap_fibroblasts", "PV Cap Fibroblasts", meta_data$CellType)
 
 
 print("We load the fraction and add the clonal information to the meta data.")
@@ -103,8 +104,8 @@ meta_data$Clonal <- ifelse(meta_data$Clonal, "Clonal", "WT")
 rm(fraction)
 
 
-print("We remove the Unannotated spots.")
-meta_data <- subset(meta_data, CellType != "Unannotated")
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We save the clonal information.")

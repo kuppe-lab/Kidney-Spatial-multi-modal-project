@@ -38,8 +38,8 @@ meta_data_total[["CellType"]] <- meta_data_total[["Clusters2"]]
 meta_data_total[["CellType"]][meta_data_total[["CellType"]] %in% c("PT_S1", "PT_S2", "PT_S3")] <- "PT_Cells"
 
 
-print("We remove the Unannotated spots.")
-meta_data_total <- subset(meta_data_total, CellType != "Unannotated")
+# print("We remove the Unannotated spots.")
+# meta_data_total <- subset(meta_data_total, CellType != "Unannotated")
 
 
 print("We get the used sample.")
@@ -141,7 +141,7 @@ for(i in seq_along(samples)){
   print("Heatmap 1")
   colnames(p) <- new_celltype_names[colnames(p)]
   p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,
@@ -184,7 +184,7 @@ for(i in seq_along(samples)){
   na_check <- colSums(!is.na(p)) > 0
   p_subset <- p[, na_check, drop = FALSE]
   p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,
@@ -225,7 +225,7 @@ for(i in seq_along(samples)){
 
   print("Heatmap 3")
   p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,

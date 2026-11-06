@@ -64,8 +64,8 @@ meta_data[["Merged1"]] <- ifelse(grepl("Ref", meta_data[["Merged1"]]), "Ref", me
 meta_data[, c("chrM_63_T_G", "chrM_65_T_G", "chrM_16362_T_C")] <- NULL
 
 
-print("We remove the Unannotated spots.")
-meta_data <- subset(meta_data, CellType != "Unannotated")
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We perform the enrichment test.")
@@ -142,7 +142,7 @@ new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "End
 colnames(p) <- new_celltype_names[colnames(p)]
 rownames(p)[2] <- "63T>G+65T>G+\n16362T>C"
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -174,10 +174,10 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
-png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
+png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 3, units = "in", res = 600, type = "cairo")
 ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
-pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.pdf"), width = 10, height = 10)
+pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.pdf"), width = 10, height = 3)
 ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 
@@ -185,7 +185,7 @@ dev.off()
 na_check <- colSums(!is.na(p)) > 0
 p_subset <- p[, na_check, drop = FALSE]
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -226,7 +226,7 @@ dev.off()
 
 # With legend.
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,

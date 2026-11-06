@@ -49,6 +49,7 @@ vois = vois["variant"].values
 
 print("Loading the AnnData object from 00200.", flush=True)
 adata_pruned = ad.read_h5ad(f"{input_directory}{sample_use}/adata_pruned.h5ad")
+adata_pruned = adata_pruned[~(adata_pruned.obs.Annotation == "Unannotated"), :]
 # A variant that is listed twice counts once.
 # This should not happen, but since this can happen when supplying a hand-written
 # VOI list, we better check.

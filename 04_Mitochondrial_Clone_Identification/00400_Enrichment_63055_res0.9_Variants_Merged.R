@@ -74,8 +74,8 @@ meta_data[["Merged2"]] <- ifelse(meta_data[["Merged2"]] > 0, "Alt", "Ref")
 meta_data[, c("chrM_709_G_A", "chrM_51_T_C", "chrM_2395_A_G", "chrM_16192_C_T", "chrM_16306_C_T")] <- NULL
 
 
-print("We remove the Unannotated spots.")
-meta_data <- subset(meta_data, CellType != "Unannotated")
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We perform the enrichment test.")
@@ -152,7 +152,7 @@ new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "End
 colnames(p) <- new_celltype_names[colnames(p)]
 rownames(p)[4:5] <- c("51T>C+\n2395A>G", "709G>A+\n16192C>T+\n16306C>T")
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -195,7 +195,7 @@ dev.off()
 na_check <- colSums(!is.na(p)) > 0
 p_subset <- p[, na_check, drop = FALSE]
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -236,7 +236,7 @@ dev.off()
 
 # With legend.
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = sample_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
