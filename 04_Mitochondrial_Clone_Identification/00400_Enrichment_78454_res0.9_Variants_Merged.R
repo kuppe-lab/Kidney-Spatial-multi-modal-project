@@ -30,6 +30,21 @@ print("Variables.")
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "78454"
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
+title_use <- title_names[sample_use]
 input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant_PT_Cells_Separate/")
 vois <- c("chrM_63_T_G", "chrM_65_T_G", "chrM_564_G_A", "chrM_16362_T_C")
@@ -142,7 +157,7 @@ new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "End
 colnames(p) <- new_celltype_names[colnames(p)]
 rownames(p)[2] <- "63T>G+65T>G+\n16362T>C"
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -185,7 +200,7 @@ dev.off()
 na_check <- colSums(!is.na(p)) > 0
 p_subset <- p[, na_check, drop = FALSE]
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -226,7 +241,7 @@ dev.off()
 
 # With legend.
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,

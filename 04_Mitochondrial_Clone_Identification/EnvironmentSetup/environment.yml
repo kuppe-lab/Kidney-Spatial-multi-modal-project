@@ -1,0 +1,16 @@
+name: spatial_sigurd_py_env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11.16
+  - pip
+  - uv
+  - cyvcf2=0.34.0
+  - r-base>=4.3
+  - r-ggplot2
+  - r-tidyr
+  - r-dplyr
+  - r-tibble
+  - bioconductor-complexheatmap
+

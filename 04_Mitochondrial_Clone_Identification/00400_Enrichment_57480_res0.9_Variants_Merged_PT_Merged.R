@@ -29,6 +29,21 @@ print("Variables.")
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "57480"
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
+title_use <- title_names[sample_use]
 input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
 vois <- c("chrM_10640_T_C", "chrM_14438_G_A", "chrM_3315_G_A", "chrM_14123_T_C", "chrM_9100_A_C", "chrM_13928_G_A", "chrM_8440_A_G", "chrM_12776_T_C", "chrM_8614_T_C", "chrM_11435_G_A")

@@ -1,0 +1,20 @@
+# Copied from [tool.uv] override-dependencies in spatial_sigurd_py/pyproject.toml
+# spagft 0.1.3 pins very old versions (for example: numpy==1.21.5, scanpy==1.9.1).
+# Here, we replace them.
+chardet; sys_platform == 'never'
+charset-normalizer; sys_platform == 'never'
+gseapy>=1
+igraph>=0.10,<0.12
+kneed==0.7.0
+leidenalg; sys_platform == 'never'
+louvain>=0.8
+matplotlib>=3.8
+networkx>=3
+numba>=0.60
+numpy>=2
+pandas>=2,<3
+plotnine>=0.13
+scanpy>=1.10
+scikit-learn>=1.4
+scipy>=1.11
+setuptools<82

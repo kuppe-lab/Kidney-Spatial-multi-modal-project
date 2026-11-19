@@ -33,8 +33,22 @@ break_names <- c("531T>C", "2635G>C", "WT")
 
 print("We get the used sample.")
 sample_use <- "71116"
-condition_use <- "Fibrotic"
 print(sample_use)
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
+title_use <- title_names[sample_use]
 input_use <- paste0(input, sample_use, "/")
 output_use <- paste0(output, sample_use, "/")
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
@@ -66,7 +80,7 @@ meta_data <- rbind(subset(meta_data, clone_manual == "WT"), subset(meta_data, cl
 
 p <- ggplot2::ggplot(meta_data, ggplot2::aes(x = X, y = -Y, colour = plot_colour)) +
   ggplot2::geom_point() +
-  ggplot2::ggtitle(paste0(condition_use, " ", sample_use)) +
+  ggplot2::ggtitle(title_use) +
   ggplot2::scale_colour_identity(
     name   = "Variants", 
     guide  = "legend",
@@ -74,10 +88,10 @@ p <- ggplot2::ggplot(meta_data, ggplot2::aes(x = X, y = -Y, colour = plot_colour
     breaks = unname(colours_voi)) +
   ggplot2::theme_void() +
   ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 6))) +
-  ggplot2::theme(plot.title          = ggplot2::element_text(size = 22, face = "bold", hjust = 0.5),
+  ggplot2::theme(plot.title          = ggplot2::element_text(size = 22, face = "plain", hjust = 0.5),
                  plot.title.position = "plot",
-                 legend.title        = ggplot2::element_text(size = 20, face = "bold"),
-                 legend.text         = ggplot2::element_text(size = 16, face = "bold"))
+                 legend.title        = ggplot2::element_text(size = 20, face = "plain"),
+                 legend.text         = ggplot2::element_text(size = 16, face = "plain"))
 ggplot2::ggsave(paste0(output_use, "VOIs_scatter_ManualCombinations.png"), p, width = 9.25, height = 8, dpi = 300)
 ggplot2::ggsave(paste0(output_use, "VOIs_scatter_ManualCombinations.pdf"), p, width = 9.25, height = 8, dpi = 300)
 p <- p + ggplot2::theme_void() + ggplot2::theme(plot.title = ggplot2::element_blank(), legend.position = "none")
