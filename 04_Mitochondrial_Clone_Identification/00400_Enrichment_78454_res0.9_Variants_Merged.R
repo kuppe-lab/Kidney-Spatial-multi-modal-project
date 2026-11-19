@@ -1,9 +1,7 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 78454
 
-Performing the enrichment analysis for 78454
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
@@ -32,8 +30,23 @@ print("Variables.")
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 sample_use <- "78454"
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
+title_use <- title_names[sample_use]
 input_use <- paste0(input, sample_use, "/")
-output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
+output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant_PT_Cells_Separate/")
 vois <- c("chrM_63_T_G", "chrM_65_T_G", "chrM_564_G_A", "chrM_16362_T_C")
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
@@ -64,6 +77,10 @@ meta_data[["Merged1"]] <- ifelse(grepl("Alt", meta_data[["Merged1"]]), "Alt", me
 meta_data[["Merged1"]] <- ifelse(grepl("Ref", meta_data[["Merged1"]]), "Ref", meta_data[["Merged1"]])
 
 meta_data[, c("chrM_63_T_G", "chrM_65_T_G", "chrM_16362_T_C")] <- NULL
+
+
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We perform the enrichment test.")
@@ -140,7 +157,7 @@ new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "End
 colnames(p) <- new_celltype_names[colnames(p)]
 rownames(p)[2] <- "63T>G+65T>G+\n16362T>C"
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -150,7 +167,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -169,13 +186,13 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
-png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
+png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.png"), width = 10, height = 3, units = "in", res = 600, type = "cairo")
 ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
-pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.pdf"), width = 10, height = 10)
+pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9_Merged.pdf"), width = 10, height = 3)
 ComplexHeatmap::draw(p1, padding = grid::unit(c(2,3,2,2), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 
@@ -183,7 +200,7 @@ dev.off()
 na_check <- colSums(!is.na(p)) > 0
 p_subset <- p[, na_check, drop = FALSE]
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -193,7 +210,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -212,7 +229,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9_Merged.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
@@ -224,7 +241,7 @@ dev.off()
 
 # With legend.
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = "Res 0.9",
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -234,7 +251,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -253,12 +270,12 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9_Merged.png"), width = 4, height = 3, units = "in", res = 600, type = "cairo")
-ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,8,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()
 pdf(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9_Merged.pdf"), width = 4, height = 3)
-ComplexHeatmap::draw(p1, padding = grid::unit(c(2,4,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
+ComplexHeatmap::draw(p1, padding = grid::unit(c(2,8,2,3), "mm"), heatmap_legend_side = "right", annotation_legend_list = list(legend_sig, legend_P))
 dev.off()

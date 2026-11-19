@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created 26.10.2026
-
 @author: Martin Grasshoff
 Environment: spatial_sigurd_py_env
 

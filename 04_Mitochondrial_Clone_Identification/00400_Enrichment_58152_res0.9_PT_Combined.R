@@ -1,4 +1,6 @@
-# We perform the enrichment of the flow gel sample 73266.
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 58152
 
 print("Libraries.")
 suppressPackageStartupMessages({
@@ -24,27 +26,46 @@ legend_sig <- ComplexHeatmap::Legend(
 
 
 print("Variables.")
+sample_use <- "58152"
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
+title_use <- title_names[sample_use]
 input <- "MinVAF_0.10_MinAltReads_2_Pruning/"
 output <- "MinVAF_0.10_MinAltReads_2_Pruning/"
-sample_use <- "73266"
 input_use <- paste0(input, sample_use, "/")
-output_use <- paste0(output, sample_use, "/Enrichment_Variant_PT_CellTypes_Separate/")
-vois <- c("chrM_3424_G_A", "chrM_15612_G_A", "chrM_16188_C_T")
+output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
+vois <- read.csv(paste0(input_use, "SpatiallyVariableVariants.csv"))[,1]
+vois <- gsub(">", "_", vois)
 dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
 
 
 print("We load the meta data.")
-meta_data <- read.table("kidney7_15mm_with_ref_2_meta_data.csv", sep = ",", header = TRUE, row.names = 1)
-meta_data[["Sample"]] <- gsub("Diseased_|Healthy_", "", meta_data[["Sample"]])
-rownames(meta_data) <- gsub("Diseased_|Healthy_", "", rownames(meta_data))
-meta_data[["annotation"]] <- gsub("-|/| ", "_", meta_data[["annotation"]])
-meta_data[["CellType"]] <- meta_data[["annotation"]]
+meta_data <- read.table("kidney7_marker_peak_integrate_scATAC_res0.9_annoted2_meta.csv", sep = ",", header = TRUE, row.names = 1)
+meta_data[["Sample"]] <- gsub("^P", "", meta_data[["Sample"]])
+rownames(meta_data) <- gsub("^P", "", rownames(meta_data))
+meta_data[["CellType"]] <- meta_data[["Clusters2"]]
+meta_data[["CellType"]][meta_data[["CellType"]] %in% c("PT_S1", "PT_S2", "PT_S3")] <- "PT_Cells"
+
+
+# print("We remove the Unannotated spots.")
+# meta_data <- subset(meta_data, CellType != "Unannotated")
 
 
 print("We load the fraction.")
 fraction <- read.table(paste0(input, sample_use, "/fraction_matrix.csv"), sep = ",", row.names = 1, header = TRUE)
 colnames(fraction) <- gsub("\\.", "_", colnames(fraction))
-rownames(fraction) <- gsub("_flowgel", "", rownames(fraction))
 fraction[fraction > 0] <- 1
 meta_data <- meta_data[rownames(meta_data) %in% rownames(fraction), ]
 fraction <- fraction[rownames(meta_data), ]
@@ -53,7 +74,6 @@ for(i in seq_along(vois)){
   voi_use <- vois[i]
   meta_data[, voi_use] <- ifelse(meta_data[, voi_use] == 1, "Alt", "Ref")
 }
-
 
 print("We perform the enrichment test.")
 celltypes <- sort(unique(meta_data[["CellType"]]))
@@ -78,8 +98,8 @@ for(i in seq_along(vois)){
 }
 results[["P_adj"]] <- p.adjust(results[["P"]], method = "fdr")
 results[["P_adj_log10"]] <- -log10(results[["P_adj"]])
-write.table(results, paste0(output_use, "/Enrichment_Variant_CellType.csv"), sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-write.table(cells_per_variant_and_celltype, paste0(output_use, "/cells_per_variant_and_celltype.csv"), sep = ",", col.names = TRUE, row.names = TRUE, quote = FALSE)
+write.table(results, paste0(output_use, "/Enrichment_Variant_CellType_Enhanced_kidney7_res0.9_Merged.csv"), sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+write.table(cells_per_variant_and_celltype, paste0(output_use, "/cells_per_variant_and_celltype_enhanced_kidney7_res0.9_Merged.csv"), sep = ",", col.names = TRUE, row.names = TRUE, quote = FALSE)
 
 
 print("We generate a heatmap for the new annotation.")
@@ -124,7 +144,7 @@ legend_P <- ComplexHeatmap::Legend(
 )
 
 p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -134,7 +154,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -153,7 +173,7 @@ p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
@@ -167,7 +187,7 @@ dev.off()
 na_check <- colSums(!is.na(p)) > 0
 p_subset <- p[, na_check, drop = FALSE]
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -177,7 +197,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -196,7 +216,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller_Without_Legend.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
@@ -208,7 +228,7 @@ dev.off()
 
 # With legend.
 p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-  column_title = sample_use,
+  column_title = title_use,
   rect_gp = grid::gpar(col = "black", lwd = 1),
   row_title = "",
   show_row_names = TRUE,
@@ -218,7 +238,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
   row_names_gp = grid::gpar(fontsize = 15),
   column_names_gp = grid::gpar(fontsize = 15),
   column_names_rot = 45,
-  column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+  column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_heatmap_legend = FALSE,
@@ -237,7 +257,7 @@ p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
     } else{
       txt <- ""
     }
-    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+    grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
   }
 )
 png(paste0(output_use, "/Heatmap_Annotation_Smaller.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")

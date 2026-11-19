@@ -1,14 +1,13 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# Performing the enrichment analysis for 61968, 63079, 63409
 
-Performing the enrichment analysis for 61968, 63079, 63409
-"""
 print("Libraries.")
 suppressPackageStartupMessages({
   library(tidyr)
   library(dplyr)
   library(tibble)
+  library(ComplexHeatmap)
 })
 
 
@@ -38,6 +37,10 @@ rownames(meta_data_total) <- gsub("^P", "", rownames(meta_data_total))
 meta_data_total[["CellType"]] <- meta_data_total[["Clusters2"]]
 
 
+# print("We remove the Unannotated spots.")
+# meta_data_total <- subset(meta_data_total, CellType != "Unannotated")
+
+
 print("We get the used sample.")
 samples <- c("61968", "63079", "63409")
 new_celltype_names <- c(ATL_DTL = "ATL DTL", CD = "CD", DCT = "DCT", Endo = "Endo", FIB = "FIB", "Immune cells" = "Immune Cells", "Injured PTs" = "Injured PTs", POD = "POD", PT_S1 = "PT S1", PT_S2 = "PT S2",
@@ -47,7 +50,7 @@ for(i in seq_along(samples)){
   sample_use <- samples[i]
   print(sample_use)
   input_use <- paste0(input, sample_use, "/")
-  output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant/")
+  output_use <- paste0(output, sample_use, "/Enrichment_kidney7_res0.9_Variant_Variant_PT_Cells_Separate/")
   dir.create(output_use, showWarnings = FALSE, recursive = TRUE)
   vois <- read.table(paste0(input_use, "SpatiallyVariableVariants.csv"), header = TRUE, sep = ",")
   vois <- gsub(">", "_", vois[, 1])
@@ -137,7 +140,7 @@ for(i in seq_along(samples)){
   print("Heatmap 1")
   colnames(p) <- new_celltype_names[colnames(p)]
   p1 <- ComplexHeatmap::Heatmap(p, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,
@@ -147,7 +150,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -166,7 +169,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_kidney7_res0.9.png"), width = 10, height = 10, units = "in", res = 600, type = "cairo")
@@ -180,7 +183,7 @@ for(i in seq_along(samples)){
   na_check <- colSums(!is.na(p)) > 0
   p_subset <- p[, na_check, drop = FALSE]
   p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,
@@ -190,7 +193,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -209,7 +212,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_Without_Legend_kidney7_res0.9.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")
@@ -221,7 +224,7 @@ for(i in seq_along(samples)){
 
   print("Heatmap 3")
   p1 <- ComplexHeatmap::Heatmap(p_subset, name = "-log10(P)",
-    column_title = "Res 0.9",
+    column_title = sample_use,
     rect_gp = grid::gpar(col = "black", lwd = 1),
     row_title = "",
     show_row_names = TRUE,
@@ -231,7 +234,7 @@ for(i in seq_along(samples)){
     row_names_gp = grid::gpar(fontsize = 15),
     column_names_gp = grid::gpar(fontsize = 15),
     column_names_rot = 45,
-    column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+    column_title_gp = grid::gpar(fontsize = 20, fontface = "plain"),
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     show_heatmap_legend = FALSE,
@@ -250,7 +253,7 @@ for(i in seq_along(samples)){
       } else{
         txt <- ""
       }
-      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "bold"))
+      grid::grid.text(txt, x, y, gp = grid::gpar(fontface = "plain"))
     }
   )
   png(paste0(output_use, "/Heatmap_Annotation_Enhanced_Smaller_kidney7_res0.9.png"), width = 4, height = 5, units = "in", res = 600, type = "cairo")

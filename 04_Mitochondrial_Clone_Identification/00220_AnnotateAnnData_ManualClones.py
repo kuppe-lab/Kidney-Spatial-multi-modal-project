@@ -83,6 +83,10 @@ clone_definitions = {
         "3337_G_A": ["chrM_3337_G>A"],
         "15746_A_G": ["chrM_15746_A>G"],
     },
+        "78454": {
+        "63_T_G_65_T_G_16362_T_C": ["chrM_63_T>G", "chrM_65_T>G", "chrM_16362_T>C"],
+        "564_G_A": ["chrM_564_G>A"],
+    },
     "78454_flowgel": {
         "15734_G_A": ["chrM_15734_G>A"],
         "556_A_G": ["chrM_556_A>G"],

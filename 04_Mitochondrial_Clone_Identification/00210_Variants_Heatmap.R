@@ -1,20 +1,11 @@
-"""
-@author: Martin Grasshoff
-Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
-
-We plot the mtVars as a heatmap.
-
-Execute the script like this:
-python 00200_Loading_Processing.py <interger_index>
-
-The script needs as input:
-- the SVVs from 00200
-- the fraction matrix
-- positions
-
-Outputs is a heatmap of the SVVs.
-
-"""
+# @author: Martin Grasshoff
+# Environment: Spatial_ATAC_MT_Genotyping_Kuppe_Lab
+# We plot the mtVars as a heatmap.
+# The script needs as input:
+# - the SVVs from 00200
+# - the fraction matrix
+# - positions
+# Output is a heatmap of the SVVs.
 
 print("Libraries.")
 suppressPackageStartupMessages({
@@ -25,6 +16,20 @@ suppressPackageStartupMessages({
 
 print("Variables.")
 samples <- c("57480", "57480_flowgel", "58152", "61968", "63055", "63079", "63409", "63511_reseq", "71116", "72351_reseq", "73266", "76992_2", "78454", "78454_flowgel")
+title_names <- c("57480"         = "Fibrotic_57480",
+                 "57480_flowgel" = "Fibrotic_57480",
+                 "58152"         = "Non-fibrotic_58152",
+                 "61968"         = "Non-fibrotic_61968",
+                 "63055"         = "Non-fibrotic_63055",
+                 "63079"         = "Non-fibrotic_63079",
+                 "63409"         = "Non-fibrotic_63409",
+                 "63511_reseq"   = "Non-fibrotic_63511",
+                 "71116"         = "Fibrotic_71116",
+                 "72351_reseq"   = "Non-fibrotic_72351",
+                 "73266"         = "Non-fibrotic_73266",
+                 "76992_2"       = "Non-fibrotic_76992",
+                 "78454"         = "Fibrotic_78454",
+                 "78454_flowgel" = "Fibrotic_78454")
 positions_paths <- read.csv("DesignMatrix_VisiumHD.csv")
 positions_paths <- setNames(positions_paths$positions, positions_paths$sample)
 
@@ -33,6 +38,7 @@ for(sample_use in samples){
   input <- paste0("MinVAF_0.10_MinAltReads_2_Pruning/", sample_use, "/")
   output <- paste0("MinVAF_0.10_MinAltReads_2_Pruning/", sample_use, "/")
   position_use <- positions_paths[[sample_use]]
+  title_use <- title_names[sample_use]
   vois <- read.table(paste0(input, "SpatiallyVariableVariants.csv"), header=TRUE, sep=",")[, 1]
   vois <- gsub(">", "_", vois)
 
@@ -49,7 +55,6 @@ for(sample_use in samples){
   colnames(fraction) <- gsub("\\.", "_", colnames(fraction))
   spots <- intersect(rownames(positions), rownames(fraction))
   fraction <- fraction[spots, ]
-
 
   print("Generating the heatmap for all VOIs.")
   fraction_use <- t(fraction[, vois, drop = FALSE])
@@ -72,15 +77,18 @@ for(sample_use in samples){
 
   fraction_reordered <- fraction_use[, spot_order, drop = FALSE]
   fraction_reordered[fraction_reordered > 0] <- 1 # We set all values to one to improve the plot.
+  rownames(fraction_reordered) <- gsub("chrM_", "", rownames(fraction_reordered))
+  substr(rownames(fraction_reordered), start = nchar(rownames(fraction_reordered))-1, stop = nchar(rownames(fraction_reordered))-1) <- ">"
+  rownames(fraction_reordered) <- gsub("_", "", rownames(fraction_reordered))
 
   hm <- ComplexHeatmap::Heatmap(fraction_reordered,
     name = "VAF",
-    row_title_gp = grid::gpar(fontsize=16, fontface="bold"),
-    row_names_gp = grid::gpar(fontsize=16, fontface="bold"),
+    row_title_gp = grid::gpar(fontsize=24, fontface="plain"),
+    row_names_gp = grid::gpar(fontsize=24, fontface="plain"),
     row_names_max_width = unit(32, "cm"),
-    column_title = "MT Variants",
-    column_title_gp = grid::gpar(fontsize=16, fontface="bold"),
-    column_names_gp = grid::gpar(fontsize=16, fontface="bold"),
+    column_title = title_use,
+    column_title_gp = grid::gpar(fontsize=24, fontface="plain"),
+    column_names_gp = grid::gpar(fontsize=24, fontface="plain"),
     col = circlize::colorRamp2(seq(0, max(fraction_reordered, na.rm=TRUE), length.out=9), c("#FCFCFC", "#FFEDB0", "#FFDF5F", "#FEC510", "#FA8E24", "#F14C2B", "#DA2828", "#BE2222", "#A31D1D")),
     show_column_dend = FALSE,
     show_row_names = TRUE,
